@@ -65,12 +65,6 @@ void init(ListType *list)
 ListNode *search(ListNode *phead, int x) {
 	ListNode *p;
 	p = phead;
-	while (p != NULL) {
-		if (p->data == x) {
-			return p;
-		}
-		p = p->link;
-	}
 	return p;
 }
 void find_line(ListNode **phead) {
@@ -88,19 +82,20 @@ void reverse_lines(ListNode **phead) {
 		return;
 	}
 	struct ListNode *p, *q, *r;
+
 	p = q = r = *phead;
-	p = q->link->link;
+	p = p->link->link;
 	q = q->link;
-	q->link = NULL;
+	r->link = NULL;
 	q->link = r;
 
-	while(p != NULL){
+	while (p != NULL) {
 		r = q;
 		q = p;
 		p = p->link;
 		q->link = r;
 	}
-	q = *phead;
+	*phead = q;
 }
 // 리스트안에서 pos 위치의 노드를 반환한다.
 ListNode *get_node_at(ListType *list, int pos)

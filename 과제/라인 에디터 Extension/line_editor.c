@@ -62,17 +62,20 @@ void init(ListType *list)
 }
 // 리스트 탐색
 
-ListNode *search(ListNode *phead, int x) {
-	ListNode *p;
-	p = phead;
-	return p;
-}
-void find_line(ListNode **phead) {
-
-}
 // 리스트 변경
-void change_line(ListNode **phead) {
+void change_line(ListType *list, element value, int position) {
+	if (position < 0 || position >(list->length)) {
+		printf("Position Out of Bound\n");
+		return;
+	}
 
+	ListNode *tmp = list->head;
+
+	int i;
+	for (i = 0; i < position; i++) {
+		tmp = tmp->link;
+	}
+	tmp->data = value;
 }
 
 // 리스트 리버스 기능
@@ -201,6 +204,7 @@ void help()
 	printf("r: 파일읽기\n");
 	printf("w: 파일쓰기\n");
 	printf("v: 노드 역순\n");
+	printf("n: 노드 순서 불러오기\n");
 	printf("q: 종료\n");
 	printf("**************\n");
 }
@@ -298,11 +302,17 @@ void insert_line(ListType *buffer)
 //
 void do_command(ListType *buffer, char command)
 {
+	int n;
+	element input;
 	switch (command) {
 	case 'd':
 		delete_line(buffer);
 		break;
-
+	case 'n':
+		printf("알고싶은 노드 번호: ");
+		scanf("%d", &n);
+		get_entry(buffer, n);
+		break;
 	case 'i':
 		insert_line(buffer);
 		break;
@@ -314,6 +324,14 @@ void do_command(ListType *buffer, char command)
 		break;
 	case 'v':
 		reverse_lines(buffer);
+		display(buffer);
+		break;
+	case 'f':
+		printf("번호 입력: ");
+		scanf("%d", &n);
+		printf("새로 기입할 내용: ");
+		scanf("%s", &input);
+		change_line(buffer, input, n);
 		display(buffer);
 		break;
 	case 'q':

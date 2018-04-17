@@ -61,7 +61,9 @@ void init(ListType *list)
 	list->head = NULL;
 }
 // 리스트 탐색
+void find_line() {
 
+}
 // 리스트 변경
 void change_line(ListType *list, element value, int position) {
 	if (position < 0 || position >(list->length)) {
@@ -70,7 +72,6 @@ void change_line(ListType *list, element value, int position) {
 	}
 
 	ListNode *tmp = list->head;
-
 	int i;
 	for (i = 0; i < position; i++) {
 		tmp = tmp->link;
@@ -180,7 +181,6 @@ void display(ListType *buffer)
 	for (i = 0; i<buffer->length; i++) {
 		printf("%s", tmp_node->data.a);
 		tmp_node = tmp_node->link;
-		// ** 코드작성 ** //
 	}
 	printf("**************\n");
 }
@@ -302,16 +302,14 @@ void insert_line(ListType *buffer)
 //
 void do_command(ListType *buffer, char command)
 {
+	char line[MAX_CHAR_PER_LINE];
 	int n;
-	element input;
+	element p;
 	switch (command) {
 	case 'd':
 		delete_line(buffer);
 		break;
 	case 'n':
-		printf("알고싶은 노드 번호: ");
-		scanf("%d", &n);
-		get_entry(buffer, n);
 		break;
 	case 'i':
 		insert_line(buffer);
@@ -329,9 +327,13 @@ void do_command(ListType *buffer, char command)
 	case 'f':
 		printf("번호 입력: ");
 		scanf("%d", &n);
+
 		printf("새로 기입할 내용: ");
-		scanf("%s", &input);
-		change_line(buffer, input, n);
+		gets(stdin);
+		fflush(stdin);
+		fgets(line, MAX_CHAR_PER_LINE, stdin);
+		strcpy(p.a, line);
+		change_line(buffer, p, n);
 		display(buffer);
 		break;
 	case 'q':
@@ -340,7 +342,6 @@ void do_command(ListType *buffer, char command)
 	// ** 코드작성 ** //
 
 }
-
 
 // 라인 에디터 메인 프로그램
 void main()

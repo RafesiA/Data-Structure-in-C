@@ -270,7 +270,6 @@ void write_file(ListType *buffer)
 		fputs(p.a, fd);
 	}
 	fclose(fd);
-	// ** 코드작성 ** //
 
 	display(buffer);
 }
@@ -288,7 +287,6 @@ void delete_line(ListType *buffer)
 		scanf("%d", &position);
 		delete(buffer, position);
 
-		// ** 코드작성 ** //
 	}
 	display(buffer);
 }
@@ -310,7 +308,6 @@ void insert_line(ListType *buffer)
 	add(buffer, position, p);
 
 	display(buffer);
-	// ** 코드작성 ** //
 
 }
 //
@@ -358,7 +355,6 @@ void do_command(ListType *buffer, char command)
 	case 'q':
 		break;
 	}
-	// ** 코드작성 ** //
 
 }
 

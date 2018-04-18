@@ -60,8 +60,22 @@ void init(ListType *list)
 	list->length = 0;
 	list->head = NULL;
 }
-// 리스트 탐색
-void find_line() {
+// 특정 부분 문자열 탐색
+void find_line(ListType *buffer, char *value) {
+	ListNode *tmp;
+	tmp = buffer->head;
+	int i;
+	char *p;
+
+	for (i = 0; i < buffer->length; i++) {
+		p = strstr(tmp->data.a, value);
+		if (p != NULL) {
+			printf("해당 문자열을 찾음: %d번에 위치함\n", i + 1);
+			printf("해당되는 문자열: %s", p);
+		}
+		tmp = tmp->link;
+	}
+
 
 }
 // 리스트 변경
@@ -204,7 +218,8 @@ void help()
 	printf("r: 파일읽기\n");
 	printf("w: 파일쓰기\n");
 	printf("v: 노드 역순\n");
-	printf("n: 노드 순서 불러오기\n");
+	printf("f: 특정 부분을 포함하는 라인 검색\n");
+	printf("c: 노드 데이터 변경\n");
 	printf("q: 종료\n");
 	printf("**************\n");
 }
@@ -234,7 +249,6 @@ void read_file(ListType *buffer)
 
 	display(buffer);
 	fclose(fd);
-	// ** 코드작성 ** //
 
 }
 // 버퍼에 있는 데이터를 디스크 파일에 쓴다.
@@ -285,9 +299,9 @@ void insert_line(ListType *buffer)
 	char line[MAX_CHAR_PER_LINE];
 	element p;
 
-	printf("입력행번호를 입력하세요: \n");
+	printf("입력행번호를 입력하세요 (1부터): \n");
 	scanf("%d", &position);
-
+	position -= 1;
 	printf("내용을 입력하세요: \n");
 	gets(stdin);
 	fflush(stdin);
@@ -303,13 +317,18 @@ void insert_line(ListType *buffer)
 void do_command(ListType *buffer, char command)
 {
 	char line[MAX_CHAR_PER_LINE];
+	char input[MAX_CHAR_PER_LINE];
 	int n;
 	element p;
+
 	switch (command) {
 	case 'd':
 		delete_line(buffer);
 		break;
-	case 'n':
+	case 'f':
+		printf("특정 문자열 입력: ");
+		scanf("%s", &input);
+		find_line(buffer, input);
 		break;
 	case 'i':
 		insert_line(buffer);
@@ -324,7 +343,7 @@ void do_command(ListType *buffer, char command)
 		reverse_lines(buffer);
 		display(buffer);
 		break;
-	case 'f':
+	case 'c':
 		printf("번호 입력: ");
 		scanf("%d", &n);
 

@@ -1,0 +1,3 @@
+input 삽입
+using 사용하다
+namespace 공간이름

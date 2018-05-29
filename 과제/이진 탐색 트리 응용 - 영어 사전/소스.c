@@ -82,7 +82,7 @@ void insert_node(TreeNode **root, element key)
 	// 데이터 복사
 	n->key = key;
 	n->left = n->right = NULL;
-	
+
 	// 부모 노드와 링크 연결
 	if (p != NULL)
 		if (compare(key, p->key) < 0)
@@ -131,7 +131,7 @@ void delete_node(TreeNode **root, element key)
 		succ_p = t;
 		succ = t->right;						// 오른쪽 서브 트리에서 후속자를 찾는다.
 
-		// 후속자를 찾아서 계속 왼쪽으로 이동한다.
+												// 후속자를 찾아서 계속 왼쪽으로 이동한다.
 		while (succ->left != NULL) {
 			succ_p = succ;
 			succ = succ->left;
@@ -154,7 +154,7 @@ void delete_node(TreeNode **root, element key)
 }
 
 void inorder(TreeNode *root) {
-	if (root) {
+	if (root != NULL) {
 		inorder(root->left);
 		insert_node(root, root->key);
 		inorder(root->right);
@@ -162,7 +162,7 @@ void inorder(TreeNode *root) {
 }
 
 void preorder(TreeNode *root) {
-	if (root) {
+	if (root != NULL) {
 		insert_node(root, root->key);
 		preorder(root->left);
 		preorder(root->right);
@@ -170,9 +170,11 @@ void preorder(TreeNode *root) {
 }
 
 void postorder(TreeNode *root) {
-	postorder(root->left);
-	postorder(root->right);
-	insert_node(root, root->key);
+	if (root != NULL) {
+		postorder(root->left);
+		postorder(root->right);
+		insert_node(root, root->key);
+	}
 }
 
 void file_open(TreeNode *root, char input) {
@@ -201,6 +203,24 @@ void file_open(TreeNode *root, char input) {
 	}
 }
 
+void preorder_traversal(TreeNode *root, FILE *file) {
+	TreeNode *tmp;
+	tmp = root;
+
+	if (tmp != NULL) {
+		if (tmp->left != NULL) {
+			preorder_traversal(tmp->left, file);
+		}
+		fprintf(file, "%s %s\n", &tmp->key.word, &tmp->key.meaning);
+		if (tmp->right != NULL) {
+			preorder_traversal(tmp->right, file);
+		}
+	}
+	if (fwrite != -1) {
+		printf("저장됨\n");
+	}
+}
+
 void save_file(TreeNode *root) {
 	FILE *fp;
 	char userInput[MAX_WORD_SIZE];
@@ -210,15 +230,12 @@ void save_file(TreeNode *root) {
 	while (getchar() != '\n');
 	gets(userInput);
 
-	
+
 	fp = fopen(userInput, "w");
-	while (tmp->key != NULL) {
-		fprintf(tmp->key.word, fp);
-		fputs(tmp->key.meaning, fp);
-		tmp = tmp->left;
-	}
+	preorder_traversal(tmp, fp);
 
 	fclose(fp);
+
 }
 
 void help()
@@ -285,7 +302,7 @@ void main()
 				printf("해당 단어는 트리에 없습니다.\n");
 			}
 			break;
-			
+
 		case 'o':
 			printf("불러올 파일 입력(확장자명까지): ");
 			while (getchar() != '\n');
@@ -296,7 +313,7 @@ void main()
 		case 'v':
 			save_file(root);
 		}
-		
+
 
 
 	} while (command != 'q');

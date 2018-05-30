@@ -1,0 +1,9 @@
+input 입력
+output 출력
+string 문자열
+calculator 계산기
+namespace 공간이름
+using 사용하다
+stream 스트림
+open 열다
+close 닫다

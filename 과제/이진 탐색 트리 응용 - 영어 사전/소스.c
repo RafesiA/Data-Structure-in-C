@@ -153,37 +153,58 @@ void delete_node(TreeNode **root, element key)
 	free(t);
 }
 
-void inorder(TreeNode *root) {
+TreeNode preorder(TreeNode *root, FILE *in) {
+	TreeNode *tmp;
+	tmp = root;
+	element fe;
+	while (!feof(in)) {
+		fscanf(in, "%s %s", &fe.word, &fe.meaning);
+		insert_node(tmp, fe);
+	}
+	return *tmp;
+}
+
+TreeNode inorder(TreeNode *root, FILE *in) {
+	element ef;
+	while (!feof(in)) {
+		fscanf(in, "%s %s", &ef.word, &ef.meaning);
+	}
 	if (root != NULL) {
-		inorder(root->left);
-		insert_node(root, root->key);
-		inorder(root->right);
+		inorder(root->left, in);
+		insert_node(root, root->key, ef);
+		inorder(root->right, in);
 	}
 }
 
-void preorder(TreeNode *root) {
+TreeNode postorder(TreeNode *root, FILE *in) {
+	element ef;
+	while (!feof(in)) {
+		fscanf(in, "%s %s\n", &ef.word, &ef.meaning);
+	}
+
 	if (root != NULL) {
-		insert_node(root, root->key);
-		preorder(root->left);
-		preorder(root->right);
+		postorder(root->left, in);
+		postorder(root->right, in);
+		insert_node(root, root->key, ef);
 	}
 }
 
-void postorder(TreeNode *root) {
-	if (root != NULL) {
-		postorder(root->left);
-		postorder(root->right);
-		insert_node(root, root->key);
-	}
-}
+void file_open(TreeNode *root) {
+	char file_name[MAX_MEANING_SIZE];
+	TreeNode *tmp;
+	tmp = root;
 
-void file_open(TreeNode *root, char input) {
 	FILE *fp;
-	fp = fopen(input, "r");
+	printf("불러올 파일 입력(확장자명까지): ");
+	while (getchar() != '\n');
+	gets(file_name);
+
+	fp = fopen(file_name, "rt");
 	int userInput;
 
 	if (fp == NULL) {
 		printf("파일 없음\n");
+		return;
 	}
 	printf("전위 순회: 1\n");
 	printf("중위 순회: 2\n");
@@ -192,18 +213,34 @@ void file_open(TreeNode *root, char input) {
 
 	switch (userInput) {
 	case 1:
-		inorder(root);
+		preorder(tmp, fp);
 		break;
 	case 2:
-		preorder(root);
+		inorder(tmp, fp);
 		break;
 	case 3:
-		postorder(root);
+		postorder(tmp, fp);
 		break;
 	}
+	fclose(fp);
 }
 
 void preorder_traversal(TreeNode *root, FILE *file) {
+	TreeNode *tmp;
+	tmp = root;
+
+	fprintf(file, "%s %s\n", &tmp->key.word, &tmp->key.meaning);
+	if (tmp != NULL) {
+		if (tmp->left != NULL) {
+			preorder_traversal(tmp->left, file);
+		}
+		if (tmp->right != NULL) {
+			preorder_traversal(tmp->right, file);
+		}
+	}
+}
+
+void inorder_traversal(TreeNode *root, FILE *file) {
 	TreeNode *tmp;
 	tmp = root;
 
@@ -216,13 +253,33 @@ void preorder_traversal(TreeNode *root, FILE *file) {
 			preorder_traversal(tmp->right, file);
 		}
 	}
-	if (fwrite != -1) {
-		printf("저장됨\n");
+}
+
+void postorder_traversal(TreeNode *root, FILE *file) {
+	TreeNode *tmp;
+	tmp = root;
+
+	if (tmp != NULL) {
+		if (tmp->left != NULL) {
+			preorder_traversal(tmp->left, file);
+		}
+		if (tmp->right != NULL) {
+			preorder_traversal(tmp->right, file);
+		}
+		fprintf(file, "%s %s\n", &tmp->key.word, &tmp->key.meaning);
 	}
 }
 
+
+
+
 void save_file(TreeNode *root) {
+	if (root == NULL) {
+		printf("트리 없음\n");
+		return;
+	}
 	FILE *fp;
+	int user_input_number;
 	char userInput[MAX_WORD_SIZE];
 	TreeNode *tmp = root;
 
@@ -232,7 +289,22 @@ void save_file(TreeNode *root) {
 
 
 	fp = fopen(userInput, "w");
-	preorder_traversal(tmp, fp);
+	printf("1. 전위 순회\n");
+	printf("2. 중위 순회\n");
+	printf("3. 후위 순회\n");
+	scanf("%d", &user_input_number);
+
+	switch (user_input_number) {
+	case 1:
+		preorder_traversal(tmp, fp);
+		break;
+	case 2:
+		inorder_traversal(tmp, fp);
+		break;
+	case 3:
+		postorder_traversal(tmp, fp);
+		break;
+	}
 
 	fclose(fp);
 
@@ -257,7 +329,6 @@ void main()
 	element e;
 	TreeNode *root = NULL;
 	TreeNode *tmp;
-	char file_name[MAX_MEANING_SIZE];
 
 	do {
 		help();
@@ -304,14 +375,14 @@ void main()
 			break;
 
 		case 'o':
-			printf("불러올 파일 입력(확장자명까지): ");
+			file_open(&root);
 			while (getchar() != '\n');
-			gets(file_name);
-			file_open(root, file_name);
 			break;
 
 		case 'v':
 			save_file(root);
+			while (getchar() != '\n');
+			break;
 		}
 
 

@@ -380,6 +380,7 @@ void main()
 			travesal_select(root);
 			root = NULL;
 			file_open_suc(&root);
+			while (getchar() != '\n');
 			break;
 
 		case 'v':
